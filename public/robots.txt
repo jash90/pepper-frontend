@@ -5,7 +5,7 @@ Disallow: /admin
 Disallow: /api
 
 # Host
-Host: https://pepper-deals.pl
+Host: https://pepper.raccoonsoftware.pl
 
 # Sitemaps
-Sitemap: https://pepper-deals.pl/sitemap.xml
+Sitemap: https://pepper.raccoonsoftware.pl/sitemap.xml

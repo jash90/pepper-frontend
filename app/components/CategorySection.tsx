@@ -107,17 +107,28 @@ const CategorySection = ({
           id={`panel-${category}`}
         >
           {gridView ? (
-            // Grid view - 4 articles per row
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            // Using flex wrap with fixed width tiles
+            <div className="flex flex-wrap justify-center sm:justify-start gap-3 md:gap-4">
               {articles.map((article, index) => (
-                <ArticleCard 
-                  key={`${article.link}-${index}`}
-                  article={article} 
-                  searchQuery={hasSearchQuery ? searchQuery : undefined}
-                  index={index}
-                  isFullWidth={false}
-                  categoryColor={categoryColor}
-                />
+                <div 
+                  key={`${article.link}-${index}`} 
+                  className="transition-all duration-300"
+                  style={{ 
+                    width: "160px",
+                    height: "350px"
+                  }}
+                >
+                  <div className="h-full">
+                    <ArticleCard 
+                      key={`${article.link}-${index}`}
+                      article={article} 
+                      searchQuery={hasSearchQuery ? searchQuery : undefined}
+                      index={index}
+                      isFullWidth={false}
+                      categoryColor={categoryColor}
+                    />
+                  </div>
+                </div>
               ))}
             </div>
           ) : (

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, { useState, useEffect, useCallback, memo, useRef } from 'react';
 import { FiArrowUp } from 'react-icons/fi';
 
 interface ScrollToTopProps {
@@ -15,13 +15,14 @@ const ScrollToTop = memo(function ScrollToTop({
   offset = 6,
 }: ScrollToTopProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const isRunningRef = useRef(false);
 
   // Uproszczona wersja throttle - bez dodatkowej biblioteki
   const toggleVisibility = useCallback(() => {
     // Używamy requestAnimationFrame zamiast throttle
     // dla lepszej wydajności
-    if (!toggleVisibility.isRunning) {
-      toggleVisibility.isRunning = true;
+    if (!isRunningRef.current) {
+      isRunningRef.current = true;
       
       window.requestAnimationFrame(() => {
         if (window.scrollY > threshold) {
@@ -29,13 +30,10 @@ const ScrollToTop = memo(function ScrollToTop({
         } else {
           setIsVisible(false);
         }
-        toggleVisibility.isRunning = false;
+        isRunningRef.current = false;
       });
     }
   }, [threshold]);
-  
-  // Dodanie flagi do śledzenia czy throttle jest aktywny
-  toggleVisibility.isRunning = false;
 
   // Pasywne nasłuchiwanie zdarzeń scroll - mniejsze obciążenie procesora
   useEffect(() => {

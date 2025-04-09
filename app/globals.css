@@ -44,9 +44,9 @@ body {
   }
   
   .btn-secondary {
-    @apply bg-pepper-orange text-white font-semibold py-2 px-4 rounded-lg 
+    @apply bg-pepper-red text-white font-semibold py-2 px-4 rounded-lg 
            hover:bg-opacity-90 transition-colors focus:outline-none focus:ring-2 
-           focus:ring-pepper-orange focus:ring-opacity-50;
+           focus:ring-pepper-red focus:ring-opacity-50;
   }
   
   .input-form {
@@ -99,4 +99,86 @@ body {
   .category-indigo {
     @apply text-indigo-500 border-indigo-500;
   }
+}
+
+/* Optimized Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Staggered animation utility classes */
+.stagger-animation > * {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-animation > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(n+7) { animation-delay: 0.35s; }
+
+/* Optimized for dark mode */
+.dark .btn-primary {
+  @apply focus:ring-opacity-70;
+}
+
+.dark .btn-secondary {
+  @apply focus:ring-opacity-70;
+}
+
+.dark .input-form {
+  @apply border-gray-600 bg-gray-800 text-white;
+}
+
+/* Reduce layout shift for image placeholders */
+.img-placeholder {
+  @apply bg-gray-100 dark:bg-gray-800;
+  aspect-ratio: 16/9;
 } 

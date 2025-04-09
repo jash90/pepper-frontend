@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Providers from './providers';
 
@@ -9,12 +9,48 @@ const inter = Inter({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#111111' }
+  ]
+};
+
 export const metadata: Metadata = {
-  title: 'Pepper Deals | Find the Best Deals from Pepper.pl',
-  description: 'Browse the latest and best deals from Pepper.pl, categorized and organized for easy discovery.',
-  keywords: 'deals, discounts, pepper, pepper.pl, shopping, offers, sales',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'),
+  title: {
+    template: '%s | Pepper Deals',
+    default: 'Pepper Deals | Najlepsze promocje z Pepper.pl'
+  },
+  description: 'Przeglądaj najnowsze i najlepsze oferty z Pepper.pl, kategoryzowane i uporządkowane dla łatwego odkrywania.',
+  keywords: 'promocje, zniżki, pepper, pepper.pl, zakupy, oferty, wyprzedaże, okazje, rabaty',
   authors: [{ name: 'Pepper Deals App' }],
-  viewport: 'width=device-width, initial-scale=1',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'pl_PL',
+    siteName: 'Pepper Deals',
+    title: 'Pepper Deals | Najlepsze promocje z Pepper.pl',
+    description: 'Przeglądaj najnowsze i najlepsze oferty z Pepper.pl',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Pepper Deals Logo' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pepper Deals | Najlepsze promocje z Pepper.pl',
+    description: 'Przeglądaj najnowsze i najlepsze oferty z Pepper.pl',
+    images: ['/twitter-image.jpg'],
+  },
+  alternates: {
+    canonical: '/',
+    languages: {
+      'pl-PL': '/',
+    },
+  },
 };
 
 export default function RootLayout({
@@ -23,26 +59,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="pl" className={inter.variable} suppressHydrationWarning>
       <body className="min-h-screen">
         <Providers>
           <div className="flex flex-col min-h-screen">
-            <header className="bg-white shadow-sm sticky top-0 z-10">
+            <header className="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-10">
               <div className="container-content py-4">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-2xl font-bold text-pepper-red">
-                    Pepper Deals
-                  </h1>
-                  <nav>
+                  <a href="/" aria-label="Strona główna Pepper Deals">
+                    <h1 className="text-2xl font-bold text-pepper-red">
+                      Pepper Deals
+                    </h1>
+                  </a>
+                  <nav aria-label="Menu główne">
                     <ul className="flex space-x-4">
                       <li>
-                        <a href="/" className="hover:text-pepper-red transition-colors">
-                          Home
+                        <a href="/" className="hover:text-pepper-red transition-colors" aria-current="page">
+                          Strona główna
                         </a>
                       </li>
                       <li>
                         <a href="/about" className="hover:text-pepper-red transition-colors">
-                          About
+                          O nas
                         </a>
                       </li>
                     </ul>
@@ -60,18 +98,18 @@ export default function RootLayout({
                 <div className="flex flex-col md:flex-row justify-between items-center">
                   <div className="mb-4 md:mb-0">
                     <p className="text-sm text-gray-300">
-                      &copy; {new Date().getFullYear()} Pepper Deals. All rights reserved.
+                      &copy; {new Date().getFullYear()} Pepper Deals. Wszelkie prawa zastrzeżone.
                     </p>
                   </div>
                   <div className="flex space-x-4">
-                    <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                      Terms
+                    <a href="/regulamin" className="text-gray-300 hover:text-white transition-colors">
+                      Regulamin
                     </a>
-                    <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                      Privacy
+                    <a href="/polityka-prywatnosci" className="text-gray-300 hover:text-white transition-colors">
+                      Polityka prywatności
                     </a>
-                    <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                      Contact
+                    <a href="/kontakt" className="text-gray-300 hover:text-white transition-colors">
+                      Kontakt
                     </a>
                   </div>
                 </div>

@@ -1,0 +1,11 @@
+# Pepper Deals Robots.txt
+User-agent: *
+Allow: /
+
+# Wspólne zasoby do wykluczenia
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Sitemap
+Sitemap: https://pepper-deals.pl/sitemap.xml

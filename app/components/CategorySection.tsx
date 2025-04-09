@@ -53,24 +53,19 @@ const CategorySection = ({
     return colorClasses[colorIndex];
   }, [category]);
   
-  // Animation variants for smooth transitions
-  const containerVariants = {
-    hidden: { opacity: 0, height: 0 },
-    visible: { 
-      opacity: 1, 
-      height: 'auto',
-      transition: { 
-        duration: 0.3,
-        staggerChildren: 0.05
-      }
-    }
-  };
+  // Simplified animation - less demanding on main thread
+  const categoryColor = useMemo(() => 
+    categoryColorClass.split(' ')[0].split('-')[1], 
+    [categoryColorClass]
+  );
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6 hover:shadow-lg transition-shadow">
-      <div 
-        className="relative bg-gradient-to-r p-4 flex justify-between items-center cursor-pointer transition-all border-b border-gray-100"
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-6 hover:shadow-lg transition-shadow">
+      <button 
+        className="relative bg-gradient-to-r w-full p-4 flex justify-between items-center cursor-pointer transition-all border-b border-gray-100 dark:border-gray-700 text-left"
         onClick={toggleExpanded}
+        aria-expanded={expanded}
+        aria-controls={`panel-${category}`}
       >
         {/* Colored category indicator */}
         <div className={`absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b ${categoryColorClass}`} />
@@ -78,76 +73,71 @@ const CategorySection = ({
         <div className="flex items-center">
           {/* Category icon with gradient matching the indicator */}
           <div className={`mr-3 bg-gradient-to-br ${categoryColorClass} rounded-full p-2 text-white`}>
-            <FiShoppingBag className="h-5 w-5" />
+            <FiShoppingBag className="h-5 w-5" aria-hidden="true" />
           </div>
           
-          <h2 className="text-xl font-bold text-gray-800 flex flex-wrap items-center">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white flex flex-wrap items-center">
             {category} 
-            <span className="ml-2 text-gray-500 text-base font-normal">
+            <span className="ml-2 text-gray-500 dark:text-gray-400 text-base font-normal">
               ({articles.length})
             </span>
             
             {hasSearchQuery && (
-              <span className="flex items-center ml-2 text-sm font-normal text-gray-600 italic">
-                <FiSearch className="mr-1 h-3 w-3" />
+              <span className="flex items-center ml-2 text-sm font-normal text-gray-600 dark:text-gray-400 italic">
+                <FiSearch className="mr-1 h-3 w-3" aria-hidden="true" />
                 {searchQuery}
               </span>
             )}
           </h2>
         </div>
         
-        <motion.button 
-          className="text-gray-500 focus:outline-none focus:ring-2 focus:ring-pepper-red focus:ring-opacity-50 rounded-full p-1"
-          animate={{ rotate: expanded ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-          aria-label={expanded ? 'Zwiń kategorię' : 'Rozwiń kategorię'}
+        <div
+          className="text-gray-500 dark:text-gray-400 p-1 transform transition-transform duration-300"
+          style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          aria-hidden="true"
         >
           <FiChevronDown className="h-5 w-5" />
-        </motion.button>
-      </div>
+        </div>
+      </button>
       
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={containerVariants}
-            className="p-4"
-          >
-            {gridView ? (
-              // Grid view - 4 articles per row
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                {articles.map((article, index) => (
+      {/* Simplified animation - use CSS transitions instead of motion when possible */}
+      {expanded && (
+        <div 
+          className="p-4 animate-fadeIn" 
+          id={`panel-${category}`}
+        >
+          {gridView ? (
+            // Grid view - 4 articles per row
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {articles.map((article, index) => (
+                <ArticleCard 
+                  key={`${article.link}-${index}`}
+                  article={article} 
+                  searchQuery={hasSearchQuery ? searchQuery : undefined}
+                  index={index}
+                  isFullWidth={false}
+                  categoryColor={categoryColor}
+                />
+              ))}
+            </div>
+          ) : (
+            // List view - horizontal articles
+            <div className="space-y-4 divide-y divide-gray-100 dark:divide-gray-700">
+              {articles.map((article, index) => (
+                <div key={`${article.link}-${index}`} className={index > 0 ? 'pt-4' : ''}>
                   <ArticleCard 
-                    key={`${article.link}-${index}`}
                     article={article} 
                     searchQuery={hasSearchQuery ? searchQuery : undefined}
                     index={index}
-                    isFullWidth={false}
-                    categoryColor={categoryColorClass.split(' ')[0].split('-')[1]}
+                    isFullWidth={true}
+                    categoryColor={categoryColor}
                   />
-                ))}
-              </div>
-            ) : (
-              // List view - horizontal articles
-              <div className="space-y-4 divide-y divide-gray-100">
-                {articles.map((article, index) => (
-                  <div key={`${article.link}-${index}`} className={index > 0 ? 'pt-4' : ''}>
-                    <ArticleCard 
-                      article={article} 
-                      searchQuery={hasSearchQuery ? searchQuery : undefined}
-                      index={index}
-                      isFullWidth={true}
-                      categoryColor={categoryColorClass.split(' ')[0].split('-')[1]}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

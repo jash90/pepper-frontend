@@ -3,7 +3,6 @@
 import React, { memo, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { FiExternalLink, FiShoppingCart, FiTag } from 'react-icons/fi';
 import { Article } from '@/app/types/article';
 
@@ -74,46 +73,28 @@ const ArticleCard = memo(function ArticleCard({
       </>
     );
   };
-
-  // Animation variants
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.3,
-        delay: index * 0.05,
-      }
-    },
-    hover: {
-      y: -5,
-      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-      transition: { duration: 0.2 }
-    }
-  };
   
   // Color class for the price tag
   const priceColorClass = categoryColor === 'pepper-red' || !categoryColor 
     ? 'text-pepper-red' 
     : `text-${categoryColor}-500`;
   
+  // Calculate loading delay based on index (for staggered loading appearance)
+  const loadDelay = Math.min(index * 50, 300);
+  
   return (
-    <motion.div 
-      className={`card flex ${isFullWidth ? 'flex-row' : 'flex-col'} h-full group transition-all`}
-      variants={cardVariants}
-      initial="hidden"
-      animate="visible"
-      whileHover="hover"
+    <div 
+      className={`card flex ${isFullWidth ? 'flex-row' : 'flex-col'} h-full group hover:-translate-y-1 hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800 rounded-lg`}
+      style={{ animationDelay: `${loadDelay}ms` }}
     >
-      <div className={`relative ${isFullWidth ? 'w-1/4 min-w-[180px]' : 'h-48'} overflow-hidden bg-gray-100 ${isFullWidth ? 'rounded-r-none rounded-l-lg' : 'rounded-t-lg rounded-b-none'}`}>
+      <div className={`relative ${isFullWidth ? 'w-1/4 min-w-[180px]' : 'h-48'} overflow-hidden bg-gray-100 dark:bg-gray-700 ${isFullWidth ? 'rounded-r-none rounded-l-lg' : 'rounded-t-lg rounded-b-none'}`}>
         {image ? (
           <Link 
             href={link} 
             target="_blank" 
             rel="noopener noreferrer"
             className="block w-full h-full"
-            aria-label={`View ${title} deal`}
+            aria-label={`Przejdź do oferty ${title}`}
           >
             <Image
               src={image}
@@ -121,67 +102,71 @@ const ArticleCard = memo(function ArticleCard({
               width={300}
               height={200}
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-              priority={false}
               loading="lazy"
+              sizes={isFullWidth ? "25vw" : "(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"}
             />
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
           </Link>
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400 flex-col">
-            <FiTag className="w-8 h-8 mb-2" />
+          <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 flex-col">
+            <FiTag className="w-8 h-8 mb-2" aria-hidden="true" />
             <span>Brak zdjęcia</span>
           </div>
         )}
         
         {/* Price tag */}
-        <div className="absolute top-3 right-3 bg-white px-2 py-1 rounded shadow-md flex items-center">
-          <span className={`font-bold ${priceColorClass}`}>{price}</span>
-        </div>
+        {price && (
+          <div className="absolute top-3 right-3 bg-white dark:bg-gray-800 px-2 py-1 rounded shadow-md flex items-center">
+            <span className={`font-bold ${priceColorClass}`}>{price}</span>
+          </div>
+        )}
       </div>
       
-      <div className={`flex flex-col flex-grow p-4 ${isFullWidth ? 'border-t-0' : ''}`}>
+      <div className={`flex flex-col flex-grow p-4 dark:text-gray-100 ${isFullWidth ? 'border-t-0' : ''}`}>
         <h3 className={`text-lg font-semibold mb-2 ${isFullWidth ? '' : 'line-clamp-2 min-h-[3.5rem]'}`}>
           <Link 
             href={link} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-gray-800 hover:text-gray-900 transition-colors"
+            className="text-gray-800 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white transition-colors"
           >
             {highlightText(title)}
           </Link>
         </h3>
         
         <div className="flex items-center mb-2">
-          <FiShoppingCart className="text-gray-500 mr-2" />
+          <FiShoppingCart className="text-gray-500 dark:text-gray-400 mr-2" aria-hidden="true" />
           {isFreeShipping ? (
-            <span className="text-green-600 text-sm font-medium">Darmowa dostawa</span>
+            <span className="text-green-600 dark:text-green-400 text-sm font-medium">Darmowa dostawa</span>
           ) : shippingPrice ? (
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
               Dostawa: {shippingPrice}
             </span>
           ) : (
-            <span className="text-sm text-gray-500">Sprawdź cenę dostawy</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">Sprawdź cenę dostawy</span>
           )}
         </div>
         
-        <p className={`text-gray-600 text-sm ${isFullWidth ? '' : 'line-clamp-3'} mb-4 flex-grow`}>
-          {highlightText(description)}
-        </p>
+        {description && (
+          <p className={`text-gray-600 dark:text-gray-300 text-sm ${isFullWidth ? '' : 'line-clamp-3'} mb-4 flex-grow`}>
+            {highlightText(description)}
+          </p>
+        )}
         
-        <div className="mt-auto pt-3 border-t border-gray-100">
+        <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700">
           <Link 
             href={link} 
             target="_blank" 
             rel="noopener noreferrer"
             className={`${accentColorClass.split(' ')[0]} ${accentColorClass.split(' ')[1]} text-sm font-medium flex items-center transition-colors`}
-            aria-label={`Open ${title} deal in new tab`}
+            aria-label={`Otwórz ofertę ${title} w nowej karcie`}
           >
             Zobacz ofertę 
-            <FiExternalLink className="ml-1" />
+            <FiExternalLink className="ml-1" aria-hidden="true" />
           </Link>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 });
 

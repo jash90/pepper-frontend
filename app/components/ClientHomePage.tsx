@@ -140,18 +140,17 @@ export default function ClientHomePage() {
     <div className="animate-fade-in">
       {!isLoading && Object.keys(categorizedArticles).length > 0 && (
         <div className="mb-8 text-center">
-          <p className="text-lg text-gray-600 mb-4">
+          <p className="text-2xl text-white mb-4 font-medium">
             Znaleziono {totalArticles} ofert w {Object.keys(categorizedArticles).length} kategoriach
           </p>
           
           <div className="flex flex-wrap justify-center gap-2 mb-6">
-            <span className={`${fromCache ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700'} 
-                         px-3 py-1 rounded-full text-sm font-medium transition-all`}>
+            <span className="bg-[#2d3748] text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
               {fromCache ? 'Załadowano z Cache' : 'Dane z Pepper.pl'}
             </span>
             
             {fromPepper && (
-              <span className="bg-pepper-red bg-opacity-10 text-pepper-red px-3 py-1 rounded-full text-sm font-medium">
+              <span className="bg-pepper-red bg-opacity-90 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
                 Nowe dane z Pepper.pl
               </span>
             )}
@@ -165,7 +164,7 @@ export default function ClientHomePage() {
           <input
             type="text"
             placeholder="Szukaj ofert..."
-            className="input-form py-2 pl-10 pr-4 w-full"
+            className="input-form py-2 pl-10 pr-4 w-full bg-[#1e293b] border-[#2d3748] text-white"
             value={searchQuery}
             onChange={handleSearch}
             aria-label="Szukaj ofert"
@@ -176,7 +175,10 @@ export default function ClientHomePage() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowFilters(prev => !prev)}
-            className="btn-secondary py-2 px-4 flex items-center"
+            className={`py-2 px-4 flex items-center rounded-lg transition-colors shadow-sm
+              ${showFilters 
+                ? 'bg-[#6C63FF] text-white hover:bg-[#5A52D5]' 
+                : 'bg-[#6C63FF] text-white hover:bg-[#5A52D5]'}`}
             aria-expanded={showFilters}
             aria-label={showFilters ? 'Ukryj filtry' : 'Pokaż filtry'}
           >
@@ -187,7 +189,10 @@ export default function ClientHomePage() {
           <button
             onClick={handleRefresh}
             disabled={isRefetching}
-            className="btn-secondary py-2 px-4 flex items-center"
+            className={`py-2 px-4 flex items-center rounded-lg transition-colors shadow-sm
+              ${isRefetching 
+                ? 'bg-[#2d3748] text-gray-400 cursor-not-allowed' 
+                : 'bg-[#3182CE] text-white hover:bg-[#2c5282]'}`}
             aria-label="Odśwież dane"
           >
             <FiRefreshCw className={`mr-2 ${isRefetching ? 'animate-spin' : ''}`} aria-hidden="true" />
@@ -196,7 +201,8 @@ export default function ClientHomePage() {
           
           <button
             onClick={fetchFreshArticles}
-            className="btn-secondary py-2 px-4 flex items-center"
+            className="py-2 px-4 flex items-center rounded-lg transition-colors shadow-sm
+              bg-[#48BB78] text-white hover:bg-[#38A169]"
             aria-label="Pobierz nowe dane z Pepper"
           >
             <FiDownload className="mr-2" aria-hidden="true" />
@@ -206,11 +212,7 @@ export default function ClientHomePage() {
           {/* Toggle Grid/List View */}
           <button
             onClick={toggleGridView}
-            className={`py-2 px-4 flex items-center rounded-lg transition-colors ${
-              isGridView 
-                ? 'bg-pepper-red text-white' 
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
+            className={`py-2 px-4 flex items-center rounded-lg transition-colors shadow-sm bg-[#ED8936] text-white hover:bg-[#DD6B20]`}
             aria-pressed={isGridView}
             aria-label={isGridView ? 'Przełącz na widok listy' : 'Przełącz na widok siatki'}
           >
@@ -227,18 +229,18 @@ export default function ClientHomePage() {
       <AnimatePresence>
         {showFilters && (
           <motion.div 
-            className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-6"
+            className="bg-[#1e293b] p-4 rounded-lg mb-6 shadow-md border border-[#2d3748]"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="flex justify-between items-center mb-2">
-              <div className="font-medium dark:text-white">Filtry kategorii:</div>
+            <div className="flex justify-between items-center mb-3">
+              <div className="font-medium text-white text-lg">Filtry kategorii:</div>
               {selectedCategories.length > 0 && (
                 <button
                   onClick={clearCategoryFilters}
-                  className="text-sm text-pepper-red hover:text-pepper-orange transition-colors"
+                  className="text-sm bg-red-900 text-white hover:bg-red-800 px-3 py-1 rounded-full transition-colors"
                 >
                   Wyczyść filtry
                 </button>
@@ -249,32 +251,32 @@ export default function ClientHomePage() {
                 <button
                   key={category}
                   onClick={() => handleCategorySelect(category)}
-                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                  className={`px-3 py-1 rounded-full text-sm transition-colors shadow-sm ${
                     selectedCategories.includes(category) 
-                      ? 'bg-pepper-red text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200'
+                      ? 'bg-pepper-red text-white hover:bg-pepper-red/90' 
+                      : 'bg-[#2d3748] text-white hover:bg-[#3d4a5f]'
                   }`}
                 >
                   {category}
                 </button>
               ))}
               {categories.length > 15 && (
-                <button className="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                <button className="px-3 py-1 rounded-full text-sm bg-[#4A5568] text-white hover:bg-[#5A6171] shadow-sm">
                   +{categories.length - 15} więcej
                 </button>
               )}
             </div>
 
             {selectedCategories.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                <div className="w-full text-sm text-gray-600 dark:text-gray-300">Wybrane kategorie:</div>
+              <div className="mt-4 flex flex-wrap gap-2 pt-3 border-t border-[#2d3748]">
+                <div className="w-full text-sm font-medium text-gray-300 mb-2">Wybrane kategorie:</div>
                 {selectedCategories.map(category => (
                   <div key={`selected-${category}`} 
-                       className="flex items-center bg-pepper-red bg-opacity-10 px-3 py-1 rounded-full text-sm">
-                    <span className="text-pepper-red">{category}</span>
+                       className="flex items-center bg-pepper-red/30 px-3 py-1 rounded-full text-sm border border-pepper-red/40 shadow-sm">
+                    <span className="text-white font-medium">{category}</span>
                     <button 
                       onClick={() => handleCategorySelect(category)}
-                      className="ml-2 text-pepper-red hover:text-pepper-orange"
+                      className="ml-2 text-white hover:text-red-200 bg-[#2d3748] rounded-full w-5 h-5 flex items-center justify-center"
                       aria-label={`Usuń filtr ${category}`}
                     >
                       ×
@@ -289,8 +291,8 @@ export default function ClientHomePage() {
 
       {/* Error Message */}
       {isError && (
-        <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-pepper-red p-4 mb-8">
-          <p className="text-pepper-red dark:text-red-400">
+        <div className="bg-red-900/30 border-l-4 border-red-600 p-4 mb-8 shadow-md rounded-r">
+          <p className="text-red-300 font-medium">
             Błąd: {error instanceof Error ? error.message : 'Nieznany błąd podczas ładowania ofert.'}
           </p>
         </div>
@@ -300,7 +302,7 @@ export default function ClientHomePage() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center p-12">
           <LoadingSpinner />
-          <p className="mt-4 text-gray-600 dark:text-gray-300">Pobieranie i kategoryzowanie ofert...</p>
+          <p className="mt-4 text-gray-200 font-medium">Pobieranie i kategoryzowanie ofert...</p>
         </div>
       ) : Object.keys(filteredCategories).length > 0 ? (
         <div className="flex flex-col space-y-6">
@@ -318,9 +320,9 @@ export default function ClientHomePage() {
           
           {/* Show "Load More" button if not all categories are displayed */}
           {Object.keys(filteredCategories).length > renderCategories.length && (
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-6">
               <button 
-                className="btn-secondary py-2 px-6"
+                className="py-3 px-6 rounded-lg bg-[#6C63FF] hover:bg-[#5A52D5] text-white font-medium shadow-md transition-colors"
                 onClick={() => {/* Logic to load more would go here */}}
               >
                 Pokaż więcej kategorii ({Object.keys(filteredCategories).length - renderCategories.length})
@@ -329,15 +331,15 @@ export default function ClientHomePage() {
           )}
         </div>
       ) : searchQuery || selectedCategories.length > 0 ? (
-        <div className="text-center py-12">
-          <p className="text-xl text-gray-600 dark:text-gray-300">
+        <div className="text-center py-12 bg-[#1e293b] rounded-lg shadow-inner">
+          <p className="text-xl text-gray-200 font-medium">
             Brak wyników dla{searchQuery ? ` "${searchQuery}"` : ''} 
             {selectedCategories.length > 0 ? ` w wybranych kategoriach` : ''}
           </p>
         </div>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-xl text-gray-600 dark:text-gray-300">Nie znaleziono ofert. Spróbuj ponownie później.</p>
+        <div className="text-center py-12 bg-[#1e293b] rounded-lg shadow-inner">
+          <p className="text-xl text-gray-200 font-medium">Nie znaleziono ofert. Spróbuj ponownie później.</p>
         </div>
       )}
 

@@ -67,7 +67,7 @@ export default function RootLayout({
               <div className="container-content py-4">
                 <div className="flex justify-between items-center">
                   <a href="/" aria-label="Strona główna Pepper Deals">
-                    <h1 className="text-2xl font-bold text-pepper-red">
+                    <h1 className="text-2xl font-bold text-white">
                       Pepper Deals
                     </h1>
                   </a>

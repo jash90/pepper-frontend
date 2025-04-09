@@ -11,13 +11,15 @@ interface CategorySectionProps {
   articles: Article[];
   searchQuery?: string;
   isSingleCategory?: boolean;
+  gridView?: boolean;
 }
 
 const CategorySection = ({ 
   category, 
   articles, 
   searchQuery = '',
-  isSingleCategory = false
+  isSingleCategory = false,
+  gridView = false
 }: CategorySectionProps) => {
   const [expanded, setExpanded] = useState(true);
 
@@ -113,19 +115,36 @@ const CategorySection = ({
             variants={containerVariants}
             className="p-4"
           >
-            <div className="space-y-4 divide-y divide-gray-100">
-              {articles.map((article, index) => (
-                <div key={`${article.link}-${index}`} className={index > 0 ? 'pt-4' : ''}>
+            {gridView ? (
+              // Grid view - 4 articles per row
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                {articles.map((article, index) => (
                   <ArticleCard 
+                    key={`${article.link}-${index}`}
                     article={article} 
                     searchQuery={hasSearchQuery ? searchQuery : undefined}
                     index={index}
-                    isFullWidth={true}
+                    isFullWidth={false}
                     categoryColor={categoryColorClass.split(' ')[0].split('-')[1]}
                   />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              // List view - horizontal articles
+              <div className="space-y-4 divide-y divide-gray-100">
+                {articles.map((article, index) => (
+                  <div key={`${article.link}-${index}`} className={index > 0 ? 'pt-4' : ''}>
+                    <ArticleCard 
+                      article={article} 
+                      searchQuery={hasSearchQuery ? searchQuery : undefined}
+                      index={index}
+                      isFullWidth={true}
+                      categoryColor={categoryColorClass.split(' ')[0].split('-')[1]}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

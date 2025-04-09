@@ -7,7 +7,7 @@ import { Article } from '@/app/types/article';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import CategorySection from '@/app/components/CategorySection';
 import dynamic from 'next/dynamic';
-import { FiRefreshCw, FiDownload, FiSearch, FiFilter } from 'react-icons/fi';
+import { FiRefreshCw, FiDownload, FiSearch, FiFilter, FiList, FiGrid } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Dynamically import the heavy component with no SSR
@@ -214,12 +214,11 @@ export default function ClientHomePage() {
             aria-pressed={isGridView}
             aria-label={isGridView ? 'Przełącz na widok listy' : 'Przełącz na widok siatki'}
           >
-            <span className="md:inline hidden">
-              {isGridView ? '4 w rzędzie' : 'Lista'}
-            </span>
-            <span className="md:hidden">
-              {isGridView ? '4×' : '1×'}
-            </span>
+            {isGridView ? (
+              <FiList className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <FiGrid className="h-5 w-5" aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>

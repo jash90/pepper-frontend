@@ -74,13 +74,9 @@ export async function fetchMultiPageArticles(pages: number = 3): Promise<Article
 /**
  * Fetch categorized articles directly from the cached endpoint
  * @param days - Number of days to fetch articles from (default: 14)
- * @param minCached - Minimum number of articles in cache (default: 150)
- * @param fallbackPages - Number of pages to fetch if cache doesn't have enough articles (default: 7)
  */
 export async function fetchCachedArticlesV2(
   days: number = 14,
-  minCached: number = 150,
-  fallbackPages: number = 7
 ): Promise<{
   categorizedArticles: Record<string, Article[]>;
   articles: Article[];
@@ -89,10 +85,9 @@ export async function fetchCachedArticlesV2(
   error?: string;
 }> {
   try {
-    console.log(`Fetching articles from cached endpoint (days: ${days}, min: ${minCached})...`);
     
     const response = await fetch(
-      `${API_BASE_URL}/articles/cached?days=${days}&minCached=${minCached}&fallbackPages=${fallbackPages}`,
+      `${API_BASE_URL}/articles/cached?days=${days}`,
       {
         headers: {
           'Accept': 'application/json',
